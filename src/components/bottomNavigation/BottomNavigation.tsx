@@ -4,7 +4,7 @@ import { BottomNavigationAction, BottomNavigation as Navigation } from "@mui/mat
 import HomeIcon from '@mui/icons-material/Home';
 import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import QrScanner from "../QrScanner/QrScanner";
+import QrScanner from "../qrScanner/QrScanner";
 
 const BottomNavigation = () => {
     const [selectedNavigation, setSelectedNavigation] = useState<number>(0);

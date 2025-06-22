@@ -12,7 +12,7 @@ const NotificationButton: React.FC = () => {
             color="inherit"
             aria-label="Notifications"
         >
-            <Badge badgeContent={4} color="secondary">
+            <Badge badgeContent={4} color="warning">
                 <NotificationsIcon />
             </Badge>
         </IconButton>

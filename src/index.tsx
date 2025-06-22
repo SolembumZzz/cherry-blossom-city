@@ -4,24 +4,7 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { ThemeProvider } from '@emotion/react';
-import { createTheme } from '@mui/material';
-
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: '#FD312E'
-    },
-    success: {
-      main: '#A50034',
-    },
-    secondary: {
-      main: '#F0ECE4',
-    },
-    info: {
-      main: '#000000',
-    },
-  }
-});
+import theme from './theme/Theme';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
