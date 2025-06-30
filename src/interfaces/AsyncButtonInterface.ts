@@ -1,6 +1,4 @@
-import { CircularProgressPropsColorOverrides } from '@mui/material';
 import { ButtonProps as MuiButtonProps } from '@mui/material/Button';
-import { OverridableStringUnion } from '@mui/types';
 
 export interface AsyncButtonProps extends MuiButtonProps {
     /**
@@ -27,10 +25,9 @@ export interface AsyncButtonProps extends MuiButtonProps {
     lingerDuration?: number,
 
     /**
-     * Callback fired with the resolved value of `action`.
-     * You can use this to update parent state or show notifications.
+     * @default true
      */
-    onSuccess?: (value: any) => void;
+    isAsyncActionSuccess?: boolean,
 
     /**
      * @default inherit

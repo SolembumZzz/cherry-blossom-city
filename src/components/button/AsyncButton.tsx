@@ -1,17 +1,19 @@
 import React, { useCallback, useState } from 'react';
-import { AsyncButtonProps } from '../../interfaces/ButtonInterface';
+import { AsyncButtonProps } from '../../interfaces/AsyncButtonInterface';
 
 import MuiButton from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import { Fab } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
 import SaveIcon from '@mui/icons-material/Save';
+import ErrorIcon from '@mui/icons-material/Error';
 import { green } from '@mui/material/colors';
 
-enum AsyncButtonState {
+export enum AsyncButtonState {
     IDLE,
     LOADING,
     SUCCESS,
+    FAIL,
 };
 
 const AsyncButton: React.FC<AsyncButtonProps> = ({
@@ -20,7 +22,7 @@ const AsyncButton: React.FC<AsyncButtonProps> = ({
     children,
     loadingText,
     actionDoneText,
-    onSuccess,
+    isAsyncActionSuccess = true,
     lingerDuration = 1000,
     progressColor = 'inherit',
     ...muiButtonProps
@@ -35,10 +37,9 @@ const AsyncButton: React.FC<AsyncButtonProps> = ({
         try {
             setStatus(AsyncButtonState.LOADING);
 
-            const result = await asyncAction();
+            await asyncAction();
 
-            setStatus(AsyncButtonState.SUCCESS);
-            onSuccess?.(result);
+            setStatus(isAsyncActionSuccess ? AsyncButtonState.SUCCESS : AsyncButtonState.FAIL);
 
             setTimeout(() => {
                 setStatus(AsyncButtonState.IDLE);
@@ -47,10 +48,20 @@ const AsyncButton: React.FC<AsyncButtonProps> = ({
         } catch (error) {
             setStatus(AsyncButtonState.IDLE);
         }
-    }, [asyncAction, onSuccess, status, lingerDuration]);
+    }, [asyncAction, isAsyncActionSuccess, status, lingerDuration]);
 
     const isLoading = status === AsyncButtonState.LOADING;
-    const isSuccess = status === AsyncButtonState.SUCCESS;
+
+    const iconTemplate = () => {
+        switch (status) {
+            case AsyncButtonState.SUCCESS:
+                return <CheckIcon />
+            case AsyncButtonState.FAIL:
+                return <ErrorIcon />
+            default:
+                return <SaveIcon />
+        }
+    };
 
     switch (asyncButtonType) {
         case 'circle':
@@ -61,7 +72,7 @@ const AsyncButton: React.FC<AsyncButtonProps> = ({
                         color="primary"
                         sx={{
                             position: 'relative',
-                            ...(isSuccess && {
+                            ...(isAsyncActionSuccess && {
                                 bgcolor: green[500],
                                 '&:hover': {
                                     bgcolor: green[700],
@@ -70,7 +81,7 @@ const AsyncButton: React.FC<AsyncButtonProps> = ({
                         }}
                         onClick={handleClick}
                     >
-                        {isSuccess ? <CheckIcon /> : <SaveIcon />}
+                        {iconTemplate()}
                         {
                             isLoading &&
                             <CircularProgress
@@ -85,12 +96,13 @@ const AsyncButton: React.FC<AsyncButtonProps> = ({
                     </Fab>
                 </React.Fragment>
             )
+
         default:
             return (
                 <MuiButton
                     {...muiButtonProps}
                     onClick={handleClick}
-                    disabled={muiButtonProps.disabled || isLoading || isSuccess}
+                    disabled={muiButtonProps.disabled || isLoading || isAsyncActionSuccess}
                     sx={{
                         ...muiButtonProps.sx,
                         position: 'relative',
@@ -112,7 +124,7 @@ const AsyncButton: React.FC<AsyncButtonProps> = ({
                     {
                         isLoading
                             ? loadingText
-                            : isSuccess
+                            : isAsyncActionSuccess
                                 ? (actionDoneText ?? children)
                                 : children
                     }
